@@ -240,7 +240,7 @@
         <div class="column is-full-width">
           <div class="content has-text-justified" style="line-height: 1.6; margin-bottom: 20px;">
             <p>
-              We categorize the tampered images into three data domains: PhotoShop, DeepFake, and AIGC-Editing according to the tampering method. Based on the existing IFDL dataset, we utilize GPT-4o to generate the analysis and description of tampered images, and construct the "image-mask-description" ternary to support the multimodal training of the model. In addition, we design specific description hints for different tampering types to guide GPT to focus on different pixel artifacts and semantic errors.
+              We categorize the tampered images into three data domains: PhotoShop, DeepFake, and AIGC-Editing according to the tampering method. Based on the existing IFDL dataset, we utilize GPT-4o to generate the analysis and description of tampered images and construct the "image-mask-description" triplets to support the framework's multimodal training. In addition, we design tailored description prompts for different types of tampering, guiding GPT to focus on specific pixel artifacts and semantic inconsistencies.
             </p>
           </div>
   
@@ -299,11 +299,11 @@
             <ul type="1" style="margin-left: 20px;">
               <li>
                 <b>Domain Tag-guided Explainable Forgery Detection Module</b>. 
-                <span style="font-size: 95%;">DTE-FDM is responsible for image forgery detection and analysis of detection results, using data domain tag to bridge the data domain conflict between different types of forgery data, and guiding the multimodal large language model to generate detection results and decision basis.</span>
+                <span style="font-size: 95%;">The DTE-FDM utilizes domain tags to mitigate data domain conflicts, enabling FakeShield to effectively adapt to diverse tampering types such as Photoshop edits, DeepFake, and AIGC manipulations.</span>
               </li>
               <li>
                 <b>Forgery Localization Module</b>. 
-                <span style="font-size: 95%;">The MFLM then uses the description of the tampered region output by the DTE-FDM as the Prompt of the visual segmentation model to guide it to pinpoint the tampered region.</span>
+                <span style="font-size: 95%;">The MFLM uses the one-stage output from DTE-FDM as a prompt, guiding segmentation for accurate tampered region localization across various manipulation types.</span>
               </li>
             </ul>  
           </div>       
