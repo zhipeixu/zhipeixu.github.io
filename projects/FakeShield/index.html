@@ -116,7 +116,8 @@
             <h1 class="title is-1 publication-title">
               FakeShield: Explainable Image Forgery Detection and Localization via Multi-modal Large Language Models
             </h1>
-            <!-- <h5 class="subtitle is-5 publication-awards">NeurIPS 2023 (Oral)</h5> -->
+            
+            <h5 class="subtitle is-5 publication-awards">🔥 ICLR 2025</h5>
             
             <div class="is-size-5 publication-authors">
               <span class="author-block">
@@ -159,7 +160,7 @@
                   </a>
                 </span>
                 <span class="link-block">
-                  <a target="_blank" class="external-link button is-normal is-rounded is-dark" style="background-color: #7e7e7e;">
+                  <a href="https://github.com/zhipeixu/FakeShield#-quick-start" target="_blank" class="external-link button is-normal is-rounded is-dark">
                     <span class="icon"><i class="far fa-images"></i></span>
                     <span>Demo</span>
                   </a>
@@ -171,7 +172,7 @@
                   </a>
                 </span>
                 <span class="link-block">
-                  <a target="_blank" class="external-link button is-normal is-rounded is-dark" style="background-color: #7e7e7e;">
+                  <a href="https://huggingface.co/zhipeixu/fakeshield-v1-22b" target="_blank" class="external-link button is-normal is-rounded is-dark">
                     <span class="icon"><i class="fas fa-share-square"></i></span>
                     <span>Model</span>
                   </a>
@@ -294,7 +295,7 @@
               <p style="font-family: Times New Roman; text-align: center; margin-top: 20px;"><b>Figure 4: The pipeline of FakeShield.</b></p> <!-- 图注 -->
             </div>
             <p>      
-              The framework includes two key parts: <b>Domain Tag-guided Explainable Forgery Detection Module (DTE-FDM)</b> and <b>Forgery Localization Module (MFLM)</b>.
+              The framework includes two key parts: <b>Domain Tag-guided Explainable Forgery Detection Module (DTE-FDM)</b> and <b>Multi-modal Forgery Localization Module (MFLM)</b>.
             </p>
             <ul type="1" style="margin-left: 20px;">
               <li>
@@ -302,7 +303,7 @@
                 <span style="font-size: 95%;">DTE-FDM is responsible for image forgery detection and analysis of detection results, using data domain tag to bridge the data domain conflict between different types of forgery data, and guiding the multimodal large language model to generate detection results and decision basis.</span>
               </li>
               <li>
-                <b>Forgery Localization Module</b>. 
+                <b>Multi-modal Forgery Localization Module</b>. 
                 <span style="font-size: 95%;">The MFLM then uses the description of the tampered region output by the DTE-FDM as the Prompt of the visual segmentation model to guide it to pinpoint the tampered region.</span>
               </li>
             </ul>  
@@ -476,7 +477,6 @@
         author={Xu, Zhipei and Zhang, Xuanyu and Li, Runyi and Tang, Zecheng and Huang, Qing and Zhang, Jian},
         booktitle={International Conference on Learning Representations},
         year={2025}
-}
 }</code></pre>
     </div>
   </section>
