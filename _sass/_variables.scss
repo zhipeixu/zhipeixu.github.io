@@ -30,9 +30,10 @@ $times                      : Times, serif;
 $bodoni                     : "Bodoni MT", serif;
 $calisto                    : "Calisto MT", serif;
 $garamond                   : Garamond, serif;
+$palatino                   : Palatino, "Palatino Linotype", "Book Antiqua", serif;
 
-$global-font-family         : $sans-serif;
-$header-font-family         : $sans-serif;
+$global-font-family         : $palatino;
+$header-font-family         : $palatino;
 $caption-font-family        : $serif;
 
 /* type scale */

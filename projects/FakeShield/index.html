@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Visual Instruction Tuning">
+  <meta name="keywords" content="multimodal chatbot">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FakeShield</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="static/images/Logo.png">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"></script>
+  <script type="module" src="https://gradio.s3-us-west-2.amazonaws.com/4.16.0/gradio.js"></script>
+</head>
+
+<style>
+  .expandable-card .card-text-container {
+    max-height: 200px;
+    overflow-y: hidden;
+    position: relative;
+  }
+
+  .expandable-card.expanded .card-text-container {
+    max-height: none;
+  }
+
+  .expand-btn {
+    position: relative;
+    display: none;
+    background-color: rgba(255, 255, 255, 0.8);
+    /* margin-top: -20px; */
+    /* justify-content: center; */
+    color: #510c75;
+    border-color: transparent;
+  }
+
+  .expand-btn:hover {
+    background-color: rgba(200, 200, 200, 0.8);
+    text-decoration: none;
+    border-color: transparent;
+    color: #510c75;
+  }
+
+  .expand-btn:focus {
+    outline: none;
+    text-decoration: none;
+  }
+
+  .expandable-card:not(.expanded) .card-text-container:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 90px;
+    background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 1));
+  }
+
+  .expandable-card:not(.expanded) .expand-btn {
+    margin-top: -40px;
+  }
+
+  .card-body {
+    padding-bottom: 5px;
+  }
+
+  .vertical-flex-layout {
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .figure-img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .adjustable-font-size {
+    font-size: calc(0.5rem + 2vw);
+  }
+
+  .chat-history {
+    flex-grow: 1;
+    overflow-y: auto;
+    /* overflow-x: hidden; */
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
+
+  #gradio pre {
+    background-color: transparent;
+  }
+</style>
+
+<body>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">
+              FakeShield: Explainable Image Forgery Detection and Localization via Multi-modal Large Language Models
+            </h1>
+            
+            <h5 class="subtitle is-5 publication-awards">🔥 ICLR 2025</h5>
+            
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=504N5M0AAAAJ&hl=zh-CN">Zhipei Xu</a>
+              </span>,
+              <span class="author-block">
+                <a href="https://xuanyuzhang21.github.io/">Xuanyu Zhang</a>
+              </span>,
+              <span class="author-block">
+                <a href="https://lirunyi2001.github.io/">Runyi Li</a>
+              </span>,
+              <span class="author-block">
+                <a href="https://zhipeixu.github.io/porjects/FakeShield/">Zecheng Tang</a>
+              </span>,
+              <span class="author-block">
+                <a href="https://zhipeixu.github.io/porjects/FakeShield/">Qing Huang</a>
+              </span>,
+              <span class="author-block">
+                <a href="https://www.jianzhang.tech/">Jian Zhang</a><sup>*</sup>
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-affiliations">
+              <span class="author-block"><b style="color:rgb(255, 0, 0);">▶ </b>Peking University</span><br>
+              <span class="author-block"><b style="color:#007df2;">▶ </b>South China University of Technology</span>
+            </div>
+  
+            <div class="column has-text-centered">
+              <div class="publication-links" style="margin: 1em 0;">
+                <span class="link-block">
+                  <a href="https://arxiv.org/pdf/2410.02761" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="ai ai-arxiv"></i></span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://github.com/zhipeixu/FakeShield" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>Code</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://github.com/zhipeixu/FakeShield#-quick-start" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="far fa-images"></i></span>
+                    <span>Demo</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://huggingface.co/datasets/zhipeixu/MMTD-Set-34k" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-database"></i></span>
+                    <span>Dataset</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://huggingface.co/zhipeixu/fakeshield-v1-22b" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-share-square"></i></span>
+                    <span>Model</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+  
+            <div style="text-align: center; margin-top: 1em;">
+              <img width="95%" src="static/images/teasor.png" alt="Teaser Image">     
+              <p style="font-family: Times New Roman; text-align: center; margin-top: 20px;"><b>Figure 1: Illustration of the conventional IFDL and explainable IFDL framework.</b></p> <!-- 图注 -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+
+
+
+  <!-- Abstract -->
+
+  <section class="section" style="background-color:#efeff081;">
+    <div class="container is-max-desktop">
+      <!-- Abstract. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-six-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              The rapid development of generative AI is a double-edged sword, facilitating content creation while making image manipulation easier and more difficult to detect. 
+              Current image forgery detection and localization (IFDL) methods are generally effective, but they face two main challenges: 
+              <b>(1)</b> black-box nature with unknown detection principles, 
+              <b>(2)</b> limited generalization across diverse tampering methods (e.g., Photoshop, DeepFake, AIGC-Editing). 
+              To address these issues, we propose the explainable IFDL task and design FakeShield, a multi-modal framework capable of evaluating image authenticity, generating tampered region masks, and providing a judgment basis based on pixel-level and image-level tampering clues. 
+              Additionally, we leverage GPT-4o to enhance existing IFDL datasets, creating the Multi-Modal Tamper Description dataSet (MMTD-Set) for training FakeShield's tampering analysis capabilities. 
+              We incorporate a Domain Tag-guided Explainable Forgery Detection Module (DTE-FDM) and a Multi-modal Forgery Localization Module (MFLM) to address various types of tamper detection interpretation and achieve forgery localization guided by detailed textual descriptions. 
+              Extensive experiments demonstrate that FakeShield effectively detects and localizes various tampering techniques, offering an explainable and superior solution compared to previous IFDL methods.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  
+
+<!-- MMTDSet -->
+  <section class="section" style="padding: 20px 0;">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-six-fifths">
+        <h2 class="title is-3" style="line-height: 1.5;">
+          <img id="painting_icon" width="3%" src="https://cdn-icons-png.flaticon.com/128/13063/13063346.png"> 
+          MMTD-Set: Multi-Modal Tamper Description dataSet 
+        </h2>
+      </div>
+    </div>
+  
+    <div class="container is-max-desktop">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img id="dataset_pipeline" width="80%" src="static/images/create_dataset.png">     
+        <p style="font-family: Times New Roman; text-align: center; margin-top: 20px;"><b>Figure 2: Illustration of the construction process of our MMTD-Set.</b></p> <!-- 图注 -->
+      </div>
+  
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <div class="content has-text-justified" style="line-height: 1.6; margin-bottom: 20px;">
+            <p>
+              We categorize the tampered images into three data domains: PhotoShop, DeepFake, and AIGC-Editing according to the tampering method. Based on the existing IFDL dataset, we utilize GPT-4o to generate the analysis and description of tampered images, and construct the "image-mask-description" ternary to support the multimodal training of the model. In addition, we design specific description hints for different tampering types to guide GPT to focus on different pixel artifacts and semantic errors.
+            </p>
+          </div>
+  
+          <!-- 图片切换和滚动容器 -->
+          <div class="columns is-centered">
+            <div class="column is-four-fifths">
+              <div id="scrollable-container-1" style="width: 100%; height: 500px; overflow-y: scroll; overflow-x: hidden; border: 1px solid #ddd;">
+                <img id="long-image-1-1" src="static\images\conv_dataset1.png" alt="Long Image 1" style="width: 100%; display: block;">
+                <img id="long-image-1-2" src="static\images\conv_dataset2.png" alt="Long Image 2" style="width: 100%; display: none;">
+                <img id="long-image-1-3" src="static\images\conv_dataset3.png" alt="Long Image 3" style="width: 100%; display: none;">
+              </div>
+              <p style="font-family: Times New Roman; text-align: center; margin-top: 20px;"><b>Figure 3: MMTD-Set data samples.</b></p> <!-- 图注 -->
+              <div style="display: flex; justify-content: center; gap: 15px; margin-top: 15px;">
+                <button type="button" class="form-control btn btn-primary" onclick="previousImage(1)" id="prev-question-1">
+                  <i class="material-icons">keyboard_arrow_left</i>
+                </button>
+                <button type="button" class="form-control btn btn-primary" onclick="nextImage(1)" id="next-question-1">
+                  <i class="material-icons">keyboard_arrow_right</i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+ 
+
+
+
+<!-- FakeShield -->
+  <section class="section" style="padding: 20px 0;">
+    <!-- Results. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-six-fifths">
+        <h2 class="title is-3" style="line-height: 1.4;">
+          <img id="painting_icon" width="3%" src="https://cdn-icons-png.flaticon.com/128/1022/1022330.png"> 
+          FakeShield: Explainable Image Forgery Detection and Localization Framework
+        </h2>
+      </div>
+    </div>
+    <!--/ Results. -->    
+  
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <div class="content has-text-justified" style="line-height: 1.6; margin-bottom: 20px;"> 
+            <div style="text-align: center; margin-bottom: 20px;">
+              <img id="figure1-pipeline" width="90%" src="static/images/figure1-pipeline.png">
+              <p style="font-family: Times New Roman; text-align: center; margin-top: 20px;"><b>Figure 4: The pipeline of FakeShield.</b></p> <!-- 图注 -->
+            </div>
+            <p>      
+              The framework includes two key parts: <b>Domain Tag-guided Explainable Forgery Detection Module (DTE-FDM)</b> and <b>Multi-modal Forgery Localization Module (MFLM)</b>.
+            </p>
+            <ul type="1" style="margin-left: 20px;">
+              <li>
+                <b>Domain Tag-guided Explainable Forgery Detection Module</b>. 
+                <span style="font-size: 95%;">DTE-FDM is responsible for image forgery detection and analysis of detection results, using data domain tag to bridge the data domain conflict between different types of forgery data, and guiding the multimodal large language model to generate detection results and decision basis.</span>
+              </li>
+              <li>
+                <b>Multi-modal Forgery Localization Module</b>. 
+                <span style="font-size: 95%;">The MFLM then uses the description of the tampered region output by the DTE-FDM as the Prompt of the visual segmentation model to guide it to pinpoint the tampered region.</span>
+              </li>
+            </ul>  
+          </div>       
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  
+
+
+
+  <section class="section" style="padding: 20px 0;">
+    <!-- Results. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-six-fifths">
+        <h2 class="title is-3" style="line-height: 1.4;">
+          <img id="painting_icon" width="3%" src="https://cdn-icons-png.flaticon.com/128/1067/1067357.png"> 
+          Performance
+        </h2>
+      </div>
+    </div>
+    
+    <div class="container is-max-desktop">
+      <!-- Grounedtext2img. -->
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-4" style="line-height: 1.4;">
+            <img id="painting_icon" width="4%" src="https://cdn-icons-png.flaticon.com/128/15254/15254552.png"> 
+            Comparison of detection performance with advanced IFDL methods
+          </h2>
+          <div style="text-align: center; margin-bottom: 20px;">
+            <p style="font-family: Times New Roman; text-align: center; margin-top: 20px;"><b>Table 1: Detection performance comparison between our FakeShield and other competitive methods.</b></p> <!-- 图注 -->
+            <img id="dataset_pipeline" width="80%" src="static/images/table-detect.png">     
+          </div>
+          <p style="line-height: 1.6;">
+            We demonstrate FakeShield's superior detection accuracy and F1 scores over other methods on datasets including Photoshop, DeepFake, and AIGC-Editing. By leveraging a domain-tag guidance strategy, FakeShield effectively handles diverse tampering types and enhances cross-domain generalization. For example, it outperforms the next best method on the IMD2020 dataset with an ACC gain of 0.08 and an F1 improvement of 0.05. This domain-tagging approach allows us to resolve data conflicts across tampering types, achieving high detection performance on traditional IFDL benchmarks as well as more recent AIGC and DeepFake cases.
+          </p>
+        </div>
+      </div>
+  
+      <!-- Grounedtext2img. -->
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-4" style="line-height: 1.4;">
+            <img id="painting_icon" width="4%" src="https://cdn-icons-png.flaticon.com/128/9423/9423705.png">
+            Comparison of explaining performance with advanced MLLMs methods
+          </h2>
+          <div style="text-align: center; margin-bottom: 20px;">
+            <p style="font-family: Times New Roman; text-align: center; margin-top: 20px;"><b>Table 2: Comparative results of the pre-trained M-LLMs and FakeShield in tampering explanation capabilities on the MMTD-Set.</b></p> <!-- 图注 -->
+            <img id="dataset_pipeline" width="85%" src="static/images/table-llm.png">     
+          </div>
+          <p style="line-height: 1.6;">
+            We evaluate FakeShield's explanation capabilities by comparing its tampered area descriptions to those generated by pre-trained M-LLMs on datasets like Photoshop, DeepFake, and AIGC-Editing. Using cosine semantic similarity (CSS) as a metric, FakeShield consistently achieves the highest scores, reflecting its ability to generate accurate, detailed explanations of tampered regions. For instance, on the DSO dataset, FakeShield achieves a CSS of 0.8873, significantly outperforming the next best model, which scores 0.6484. This illustrates FakeShield's effectiveness in producing interpretable descriptions aligned closely with ground truth, even in complex tampering scenarios.
+          </p>
+          <!-- 图片切换和滚动容器 -->
+          <div class="columns is-centered">
+            <div class="column is-four-fifths">
+              <div id="scrollable-container-2" style="width: 100%; height: 500px; overflow-y: scroll; overflow-x: hidden; border: 1px solid #ddd;">
+                <img id="long-image-2-1" src="static\images\conv_compare.png" alt="Long Image 1" style="width: 100%; display: block;">
+                <img id="long-image-2-2" src="static\images\conv_compare2.png" alt="Long Image 2" style="width: 100%; display: none;">
+              </div>
+              <p style="font-family: Times New Roman; text-align: center; margin-top: 20px;"><b>Figure 5: The response of mainstream pre-trained M-LLM and FakeShield to tampered pictures.</b></p> <!-- 图注 -->
+              <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+                <button type="button" class="form-control btn btn-primary" onclick="previousImage(2)" id="prev-question-2">
+                  <i class="material-icons">keyboard_arrow_left</i>
+                </button>
+                <button type="button" class="form-control btn btn-primary" onclick="nextImage(2)" id="next-question-2">
+                  <i class="material-icons">keyboard_arrow_right</i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Grounedtext2img. -->
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-4" style="line-height: 1.4;">
+            <img id="painting_icon" width="4%" src="https://cdn-icons-png.flaticon.com/128/9803/9803194.png">
+            Comparison of localization performance with advanced IFDL methods
+          </h2>
+          <div style="text-align: center; margin-bottom: 20px;">
+            <p style="font-family: Times New Roman; text-align: center; margin-top: 20px;"><b>Table 3: Comparative results of tamper localization capabilities between competing IFDL methods and FakeShield.</b></p> <!-- 图注 -->
+            <img id="dataset_pipeline" width="85%" src="static/images/table-location.png">     
+          </div>
+          <p style="line-height: 1.6;">
+            We assess FakeShield's ability to accurately localize tampered regions by comparing it with other competitive IFDL methods on datasets such as Photoshop and AIGC-Editing. FakeShield consistently achieves the highest IoU and F1 scores across most test sets. For example, on the IMD2020 dataset, FakeShield surpasses the next best method, OSN, with an IoU improvement of 0.12 and an F1 increase of 0.1. Visual comparisons also show that FakeShield produces cleaner and more precise segmentations of tampered areas, accurately capturing boundaries where other methods, like PSCC-Net, tend to produce blurred and overly broad predictions.
+          </p>
+          <div style="text-align: center; margin-bottom: 20px;">
+            <img id="dataset_pipeline" width="85%" src="static/images/IFL-test.png">     
+            <p style="font-family: Times New Roman; text-align: center; margin-top: 20px;"><b>Figure 6: Testing results on MMTD-Set for FakeShield are compared with PSCC-Net, OSN, CAT-Net, and MVSS-Net.</b></p> <!-- 图注 -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-six-fifths">
+        <h2 class="title is-3" style="line-height: 1.4;">
+          <img id="painting_icon" width="3%" src="https://cdn-icons-png.flaticon.com/512/6231/6231228.png"> 
+          Dialogue Examples of FakeShield
+        </h2>        
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <div id="scrollable-container-3" style="width: 100%; height: 700px; overflow-y: scroll; overflow-x: hidden; border: 1px solid #ddd;">
+          <img id="long-image-3-1" src="static/images/conv_ps1.png" alt="Long Image 1" style="width: 100%; display: block;">
+          <img id="long-image-3-2" src="static/images/conv_ps2.png" alt="Long Image 2" style="width: 100%; display: none;">
+          <img id="long-image-3-3" src="static/images/conv_psau.png" alt="Long Image 3" style="width: 100%; display: none;">
+          <img id="long-image-3-4" src="static/images/conv_df1.png" alt="Long Image 4" style="width: 100%; display: none;">
+          <img id="long-image-3-5" src="static/images/conv_dfau.png" alt="Long Image 5" style="width: 100%; display: none;">
+          <img id="long-image-3-6" src="static/images/conv_aigc1.png" alt="Long Image 6" style="width: 100%; display: none;">
+        </div>
+        <p style="font-family: Times New Roman; text-align: center; margin-top: 20px;"><b>Figure 7: Dialogue examples of FakeShield</b></p> <!-- 图注 -->
+        <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 10px;">
+          <button type="button" class="form-control btn btn-primary" onclick="previousImage(3)" id="prev-question-3">
+            <i class="material-icons">keyboard_arrow_left</i>
+          </button>
+          <button type="button" class="form-control btn btn-primary" onclick="nextImage(3)" id="next-question-3">
+            <i class="material-icons">keyboard_arrow_right</i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+<script>
+  const totalImages = [3, 2, 6];
+  let currentImages = [1, 1, 1];
+
+  function showImage(windowIndex, imageIndex) {
+    // 隐藏特定窗口的所有图片
+    for (let i = 1; i <= totalImages[windowIndex - 1]; i++) {
+      document.getElementById(`long-image-${windowIndex}-${i}`).style.display = 'none';
+    }
+    // 显示特定窗口的指定图片
+    document.getElementById(`long-image-${windowIndex}-${imageIndex}`).style.display = 'block';
+  }
+
+  function nextImage(windowIndex) {
+    currentImages[windowIndex - 1]++;
+    if (currentImages[windowIndex - 1] > totalImages[windowIndex - 1]) {
+      currentImages[windowIndex - 1] = 1; // 循环回到第一张
+    }
+    showImage(windowIndex, currentImages[windowIndex - 1]);
+  }
+
+  function previousImage(windowIndex) {
+    currentImages[windowIndex - 1]--;
+    if (currentImages[windowIndex - 1] < 1) {
+      currentImages[windowIndex - 1] = totalImages[windowIndex - 1]; // 循环回到最后一张
+    }
+    showImage(windowIndex, currentImages[windowIndex - 1]);
+  }
+</script>
+
+
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@inproceedings{xu2024fakeshield,
+        title={FakeShield: Explainable Image Forgery Detection and Localization via Multi-modal Large Language Models},
+        author={Xu, Zhipei and Zhang, Xuanyu and Li, Runyi and Tang, Zecheng and Huang, Qing and Zhang, Jian},
+        booktitle={International Conference on Learning Representations},
+        year={2025}
+}</code></pre>
+    </div>
+  </section>
+
+
+</body>
+
+</html>
