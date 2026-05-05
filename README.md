@@ -17,7 +17,7 @@ AcadHomepage
     <br>
     <img src="docs/screenshot.png" width="100%"/>
     <br>
-</p>
+</p> 
 
 Some examples:
 - [Demo Page](https://rayeren.github.io/acad-homepage.github.io/)
