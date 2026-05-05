@@ -12,7 +12,7 @@ AcadHomepage
 </div>
 
 <p align="center">A Modern and Responsive Academic Personal Homepage</p>
-
+ 
 <p align="center">
     <br>
     <img src="docs/screenshot.png" width="100%"/>
